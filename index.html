@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Urdu Poetry Generator - Micro-SaaS Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #0b0e14; color: #f0f6fc; font-family: 'Inter', sans-serif; display: flex; justify-content: center; padding: 15px; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 550px; background: #161b22; padding: 20px; border-radius: 16px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .header p { font-size: 0.85rem; color: #8b949e; }
+        .ai-box { background: #0d1117; border: 1.5px solid #30363d; border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+        .ai-box label { display: block; font-size: 0.85rem; color: #58a6ff; margin-bottom: 8px; font-weight: 600; }
+        .ai-input { width: 100%; padding: 12px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; color: #f0f6fc; font-size: 1rem; text-align: left; outline: none; margin-bottom: 12px; }
+        .ai-input:focus { border-color: #58a6ff; }
+        .generate-btn { width: 100%; background: linear-gradient(135deg, #238636 0%, #2ea043 100%); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+        .loading { text-align: center; color: #58a6ff; font-size: 0.9rem; margin-top: 15px; display: none; font-weight: 600; }
+        .results-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .generated-card { background: #1f242c; border: 1px solid #30363d; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .result-text { font-family: 'Noto Nastaliq Urdu', serif; font-size: 1.2rem; line-height: 2.3; text-align: right; direction: rtl; color: #f0f6fc; white-space: pre-line; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #2d333b; padding-top: 10px; }
+        .tag { font-size: 0.75rem; color: #58a6ff; background: rgba(88, 166, 255, 0.1); padding: 4px 10px; border-radius: 6px; }
+        .copy-btn { background: #238636; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+        .ad-container { width: 100%; margin: 15px 0; background: #0d1117; border: 1px dashed #30363d; border-radius: 10px; padding: 10px; text-align: center; min-height: 90px; }
+        .footer { text-align: center; margin-top: 25px; font-size: 0.75rem; color: #484f58; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>✨ AI Urdu Poetry Generator</h1>
+        <p>100% Unique Real-Time AI Poetry for TikTok & CapCut</p>
+    </div>
+
+    <div class="ai-box">
+        <label>🤖 Enter Topic / Radeef (e.g., Maa, Dost, Dil, Sad, Love):</label>
+        <input type="text" id="userInput" class="ai-input" placeholder="Type topic here...">
+        <button class="generate-btn" onclick="generatePoetry()">Generate Unique AI Poetry ✨</button>
+        <div id="loading" class="loading">⚡ Groq Llama-3 AI is generating fresh poetry...</div>
+        
+        <div id="resultsContainer" class="results-container"></div>
+    </div>
+
+    <div class="ad-container">
+        <script async="async" data-cfasync="false" src="https://pl30146475.profitableratecpmnetwork.com/f7e4945e33fc62e299991cfdc0262013/invoke.js"></script>
+        <div id="container-f7e4945e33fc62e299991cfdc0262013"></div>
+        <span style="color:#484f58; font-size:11px; display:block; margin-top:4px;">Sponsored</span>
+    </div>
+
+    <div class="footer">&copy; 2026 AI Urdu Status Hub.</div>
+</div>
+
+<script>
+    async function generatePoetry() {
+        const input = document.getElementById('userInput').value.trim();
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loading = document.getElementById('loading');
+
+        if (!input) {
+            alert('Pehle koi topic ya word likhein!');
+            return;
+        }
+
+        resultsContainer.innerHTML = '';
+        loading.style.display = 'block';
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: input })
+            });
+
+            const data = await response.json();
+            loading.style.display = 'none';
+
+            if (data.choices && data.choices[0].message.content) {
+                const rawOutput = data.choices[0].message.content.trim();
+                const verses = rawOutput.split('---').filter(v => v.trim().length > 0);
+
+                verses.forEach((verse, index) => {
+                    const cleanVerse = verse.trim();
+                    const card = document.createElement('div');
+                    card.className = 'generated-card';
+
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'result-text';
+                    textDiv.innerText = cleanVerse;
+
+                    const footerDiv = document.createElement('div');
+                    footerDiv.className = 'card-footer';
+
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'tag';
+                    tagSpan.innerText = '#' + input.toUpperCase();
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerText = 'Copy Shair ' + (index + 1);
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(cleanVerse);
+                        copyBtn.innerText = 'Copied!';
+                        setTimeout(() => copyBtn.innerText = 'Copy Shair ' + (index + 1), 1500);
+                    };
+
+                    footerDiv.appendChild(tagSpan);
+                    footerDiv.appendChild(copyBtn);
+                    card.appendChild(textDiv);
+                    card.appendChild(footerDiv);
+                    resultsContainer.appendChild(card);
+                });
+            } else {
+                alert('Generation failed. Please try again!');
+            }
+        } catch (error) {
+            loading.style.display = 'none';
+            alert('Server connection error. Please try again.');
+        }
+    }
+</script>
+
+</body>
+</html>
